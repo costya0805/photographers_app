@@ -1,0 +1,17 @@
+# PYTHON
+*.pyc
+
+env/
+
+#IDEA
+.idea
+pycharm-debug-py3k.egg
+pycharm-debug.egg
+pydevd-pycharm.egg
+.vim
+
+.mypy_cache
+.pytest_cache
+
+venv
+.venv
