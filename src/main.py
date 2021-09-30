@@ -19,7 +19,7 @@ async def startup_event():
 
 @app.get("/")
 async def read_root():
-    return {"Hello": "World", "Version": "1.2"}
+    return {"Hello": "World", "Version": "1.3"}
 
 
 @app.get("/photos")
