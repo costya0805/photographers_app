@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI, Depends
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -12,9 +14,15 @@ from .users.schemas import UserSchema
 app = FastAPI()
 
 
+logger = logging.getLogger(__name__)
+
+
 @app.on_event("startup")
 async def startup_event():
-    await init_models()
+    try:
+        await init_models()
+    except Exception as e:
+        logger.error(f"Postgres is down. Code error:{e.args[0]}; Text error: {e.args[1]}")
 
 
 @app.get("/")
@@ -35,6 +43,7 @@ async def read_item(photo_id: int):
 @app.post("/photos")
 async def post_item(photo_id: int, description: str):
     await add_photo(photo_id, description)
+    logger.info(f"Added new photo with id={photo_id}")
     return {"photos": my_photos}
 
 
@@ -49,6 +58,7 @@ async def create_user(user: UserSchema, db: AsyncSession = Depends(get_db)):
         return new_user
     except IntegrityError:
         await db.rollback()
+        logger.error(f"User {user.first_name} already exist")
         raise Exception("User already exist")
 
 
