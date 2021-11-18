@@ -8,8 +8,7 @@ VENV ?= venv
 venv:
 	sudo python3.8 -m venv $(VENV)
 	$(VENV)/bin/python3.8 -m pip install --upgrade pip
-	$(VENV)/bin/python3.8 -m pip install poetry
-	$(VENV)/bin/poetry install
+	$(VENV)/bin/python3.8 -m pip install requirements.txt
 
 # for Windows:
 win_venv:
