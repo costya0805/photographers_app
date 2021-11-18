@@ -1,0 +1,28 @@
+.*
+GUI/static/bower_components
+GUI/static/css
+ngui/node_modules
+snmp_mibs
+README.md
+Makefile
+Dockerfile
+docker-compose.yml
+
+# PYTHON
+*.pyc
+
+env/
+
+#IDEA
+.idea
+pycharm-debug-py3k.egg
+pycharm-debug.egg
+pydevd-pycharm.egg
+.vim
+
+.mypy_cache
+.pytest_cache
+ __pycache__
+
+venv
+.venv
