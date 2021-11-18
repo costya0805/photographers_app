@@ -1,11 +1,11 @@
 import logging
 
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .db import get_db, init_models
+from .db import async_db_session
 from .photos.add_photo import add_photo
 from .photos.data import my_photos
 from .users.models import UserModel
@@ -15,14 +15,6 @@ app = FastAPI()
 
 
 logger = logging.getLogger(__name__)
-
-
-@app.on_event("startup")
-async def startup_event():
-    try:
-        await init_models()
-    except Exception as e:
-        logger.error(f"Postgres is down. Code error:{e.args[0]}; Text error: {e.args[1]}")
 
 
 @app.get("/")
@@ -48,7 +40,7 @@ async def post_item(photo_id: int, description: str):
 
 
 @app.post("/user/", response_model=UserSchema)
-async def create_user(user: UserSchema, db: AsyncSession = Depends(get_db)):
+async def create_user(user: UserSchema, db: AsyncSession = Depends(async_db_session)):
     new_user = UserModel(
         first_name=user.first_name, last_name=user.last_name, age=user.age
     )
@@ -63,6 +55,6 @@ async def create_user(user: UserSchema, db: AsyncSession = Depends(get_db)):
 
 
 @app.get("/user/", response_model=UserSchema)
-async def get_user(first_name: str, db: AsyncSession = Depends(get_db)):
+async def get_user(first_name: str, db: AsyncSession = Depends(async_db_session)):
     user = await db.execute(select(UserModel).filter_by(first_name=first_name))
     return user.scalars().first()
