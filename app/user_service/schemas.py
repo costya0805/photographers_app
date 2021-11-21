@@ -3,7 +3,7 @@ import random
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 from app.user_service.models import Roles
 
@@ -26,6 +26,7 @@ class UserBase(BaseModel):
     birthdate: Optional[datetime] = None
     city: Optional[str] = None
     role: Roles = Roles.customer
+    creation_date: datetime
 
     class Config:
         orm_mode = True
@@ -33,6 +34,13 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = generate_pwd()
+    creation_date: datetime = datetime.utcnow()
+
+    @validator('password')
+    def valid_password(cls, v: str):
+        if len(v) < 6:
+            raise ValueError('Password should be at least 6 characters')
+        return v
 
 
 class UserDB(UserBase):

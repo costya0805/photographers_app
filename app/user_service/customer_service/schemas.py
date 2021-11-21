@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from ..models import Roles
@@ -5,7 +6,7 @@ from ..schemas import UserBase, UserDB, UserCreate
 
 
 class Customer(UserBase):
-    pass
+    role: Roles = Roles.customer
 
 
 class CustomerDB(Customer, UserDB):
@@ -13,7 +14,7 @@ class CustomerDB(Customer, UserDB):
 
 
 class CustomerCreate(Customer, UserCreate):
-    pass
+    role: Optional[Roles] = Roles.customer
 
 
 class CustomerUpdate(CustomerCreate):
@@ -22,3 +23,4 @@ class CustomerUpdate(CustomerCreate):
     email: Optional[str]
     role: Optional[Roles]
     password: Optional[str]
+    creation_date: Optional[datetime]

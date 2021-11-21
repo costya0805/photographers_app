@@ -1,7 +1,7 @@
 import enum
 import uuid
 
-from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey, sql
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -39,6 +39,7 @@ class User(Base):
     role = Column(Enum(Roles), default=Roles.customer, nullable=False, index=True)
     birthdate = Column(DateTime, nullable=False)
     about = Column(String)
+    creation_date = Column(DateTime(timezone=True), server_default=sql.func.now())
 
     social_media = relationship("SocialMedia", cascade="all, delete")
     # portfolio = fore
