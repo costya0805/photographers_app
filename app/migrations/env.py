@@ -19,9 +19,9 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
-from src.db import Base
-from src.photos import models
-from src.user_service import models
+from app.db import Base
+from app.photos import models
+from app.user_service import models
 
 target_metadata = Base.metadata
 

@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
-from src.db import Base
+from app.db import Base
 
 
 class SocialMediaType(enum.Enum):

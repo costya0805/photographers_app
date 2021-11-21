@@ -1,12 +1,12 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.user_service.admin_service.service import create_admin, get_admin
-from src.user_service.customer_service.service import create_customer, get_customer
-from src.user_service.customer_service.schemas import CustomerCreate, Customer
-from src.user_service.photographer_service.service import create_photographer, get_photographer
-from src.user_service.photographer_service.schemas import PhotographerCreate, Photographer
-from src.user_service.admin_service.schemas import AdminCreate, Admin
+from app.user_service.admin_service.service import create_admin, get_admin
+from app.user_service.customer_service.service import create_customer, get_customer
+from app.user_service.customer_service.schemas import CustomerCreate, Customer
+from app.user_service.photographer_service.service import create_photographer, get_photographer
+from app.user_service.photographer_service.schemas import PhotographerCreate, Photographer
+from app.user_service.admin_service.schemas import AdminCreate, Admin
 
 
 @pytest.mark.asyncio

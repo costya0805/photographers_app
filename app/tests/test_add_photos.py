@@ -2,7 +2,7 @@ from typing import Dict
 
 import pytest
 
-from src.photos.add_photo import add_photo
+from app.photos.add_photo import add_photo
 
 
 @pytest.mark.asyncio

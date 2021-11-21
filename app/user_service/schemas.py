@@ -5,7 +5,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from src.user_service.models import Roles
+from app.user_service.models import Roles
 
 
 def generate_pwd() -> str:
