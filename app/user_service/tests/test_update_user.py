@@ -1,9 +1,12 @@
+from datetime import datetime
+
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.user_service.admin_service.service import create_admin, update_admin
 from app.user_service.customer_service.service import create_customer, update_customer
 from app.user_service.customer_service.schemas import CustomerCreate, Customer, CustomerUpdate
+from app.user_service.models import Roles
 from app.user_service.photographer_service.service import create_photographer, update_photographer
 from app.user_service.photographer_service.schemas import PhotographerCreate, Photographer, PhotographerUpdate
 from app.user_service.admin_service.schemas import AdminCreate, Admin, AdminUpdate
@@ -13,23 +16,46 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin, AdminUpda
 @pytest.mark.parametrize(
     "user,updated,photographer",
     [
-        (PhotographerCreate(**{
-            'first_name': 'Man',
-            'second_name': 'Nowhere',
-            'age': 20
-        }),
-         PhotographerUpdate(**{
-             'second_name': 'Smith',
-             'age': 21
-         }),
-         Photographer(**{
-             'first_name': 'Man',
-             'second_name': 'Smith',
-             'age': 21
-         })),
+        (
+                PhotographerCreate(
+                    **{
+                        'first_name': 'Man',
+                        'last_name': 'Nowhere',
+                        'middle_name': 'Middle',
+                        'email': 'nowhere@man.com',
+                        'phone': '+100',
+                        'birthdate': datetime(year=2000, month=1, day=1),
+                        'city': 'Nowhere',
+                        'role': Roles.photographer,
+                        'experience': 3,
+                        'about': "Good man",
+                        'creation_date': datetime(year=2021, month=11, day=1)
+                    }
+                ),
+                PhotographerUpdate(**{
+                    'middle_name': 'Smith',
+                    'city': 'Moscow',
+                }),
+                Photographer(
+                    **{
+                        'first_name': 'Man',
+                        'last_name': 'Nowhere',
+                        'middle_name': 'Smith',
+                        'email': 'nowhere@man.com',
+                        'phone': '+100',
+                        'birthdate': datetime(year=2000, month=1, day=1),
+                        'city': 'Moscow',
+                        'role': Roles.photographer,
+                        'experience': 3,
+                        'about': "Good man",
+                        'creation_date': datetime(year=2021, month=11, day=1)
+                    }
+                )
+        ),
     ]
 )
-async def test_update_photographer(db: AsyncSession, user: PhotographerCreate, updated: PhotographerUpdate, photographer: Photographer):
+async def test_update_photographer(db: AsyncSession, user: PhotographerCreate, updated: PhotographerUpdate,
+                                   photographer: Photographer):
     user = await create_photographer(db, user)
     updated_user = await update_photographer(db, user.id, updated)
     assert Photographer(**dict(updated_user)) == photographer
@@ -39,20 +65,34 @@ async def test_update_photographer(db: AsyncSession, user: PhotographerCreate, u
 @pytest.mark.parametrize(
     "user,updated,customer",
     [
-        (CustomerCreate(**{
-            'first_name': 'Man',
-            'second_name': 'Nowhere',
-            'age': 20
-        }),
-         CustomerUpdate(**{
-             'second_name': 'Smith',
-             'age': 21
-         }),
-         Customer(**{
-             'first_name': 'Man',
-             'second_name': 'Smith',
-             'age': 21
-         })),
+        (
+                CustomerCreate(**{
+                    'first_name': 'Man',
+                    'last_name': 'Nowhere',
+                    'middle_name': 'Middle',
+                    'email': 'nowhere@man.com',
+                    'phone': '+100',
+                    'birthdate': datetime(year=2000, month=1, day=1),
+                    'city': 'Nowhere',
+                    'role': Roles.customer,
+                    'creation_date': datetime(year=2021, month=11, day=1)
+                }),
+                CustomerUpdate(**{
+                    'middle_name': 'Smith',
+                    'city': 'Moscow',
+                }),
+                Customer(**{
+                    'first_name': 'Man',
+                    'last_name': 'Nowhere',
+                    'middle_name': 'Smith',
+                    'email': 'nowhere@man.com',
+                    'phone': '+100',
+                    'birthdate': datetime(year=2000, month=1, day=1),
+                    'city': 'Moscow',
+                    'role': Roles.customer,
+                    'creation_date': datetime(year=2021, month=11, day=1)
+                })
+        ),
     ]
 )
 async def test_update_customer(db: AsyncSession, user: CustomerCreate, updated: CustomerUpdate, customer: Customer):
@@ -65,20 +105,34 @@ async def test_update_customer(db: AsyncSession, user: CustomerCreate, updated: 
 @pytest.mark.parametrize(
     "user,updated,admin",
     [
-        (AdminCreate(**{
-            'first_name': 'Man',
-            'second_name': 'Nowhere',
-            'age': 20
-        }),
-         AdminUpdate(**{
-             'second_name': 'Smith',
-             'age': 21
-         }),
-         Admin(**{
-             'first_name': 'Man',
-             'second_name': 'Smith',
-             'age': 21
-         })),
+        (
+                AdminCreate(**{
+                    'first_name': 'Man',
+                    'last_name': 'Nowhere',
+                    'middle_name': 'Middle',
+                    'email': 'nowhere@man.com',
+                    'phone': '+100',
+                    'birthdate': datetime(year=2000, month=1, day=1),
+                    'city': 'Nowhere',
+                    'role': Roles.admin,
+                    'creation_date': datetime(year=2021, month=11, day=1)
+                }),
+                AdminUpdate(**{
+                    'middle_name': 'Smith',
+                    'city': 'Moscow',
+                }),
+                Admin(**{
+                    'first_name': 'Man',
+                    'last_name': 'Nowhere',
+                    'middle_name': 'Smith',
+                    'email': 'nowhere@man.com',
+                    'phone': '+100',
+                    'birthdate': datetime(year=2000, month=1, day=1),
+                    'city': 'Moscow',
+                    'role': Roles.admin,
+                    'creation_date': datetime(year=2021, month=11, day=1)
+                })
+        ),
     ]
 )
 async def test_update_admin(db: AsyncSession, user: AdminCreate, updated: AdminUpdate, admin: Admin):

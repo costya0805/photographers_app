@@ -5,6 +5,8 @@ from app.db import async_db_session
 
 
 @pytest.fixture()
-async def db() -> AsyncSession:
+def db() -> AsyncSession:
+    print("SESSION START")
     async with async_db_session as session:
         yield session
+    print("SESSION FINISH")
