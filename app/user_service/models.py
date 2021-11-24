@@ -27,7 +27,7 @@ class Roles(enum.Enum):
 class User(Base):
     __tablename__ = "user"
 
-    id = Column(UUID, default=uuid.uuid4(), primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     middle_name = Column(String)
@@ -37,7 +37,7 @@ class User(Base):
     experience = Column(Integer)
     city = Column(String)
     role = Column(Enum(Roles), default=Roles.customer, nullable=False, index=True)
-    birthdate = Column(DateTime, nullable=False)
+    birthdate = Column(DateTime(timezone=True), nullable=False)
     about = Column(String)
     creation_date = Column(DateTime(timezone=True), server_default=sql.func.now())
 
@@ -50,8 +50,8 @@ class User(Base):
 class SocialMedia(Base):
     __tablename__ = "social media"
 
-    id = Column(UUID, default=uuid.uuid4(), primary_key=True, index=True)
-    user_id = Column(UUID, ForeignKey("user.id"), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     link = Column(String, nullable=False)
     type = Column(Enum(SocialMediaType), nullable=False)
 

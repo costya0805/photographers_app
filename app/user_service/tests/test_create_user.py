@@ -50,8 +50,8 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin
         ),
     ]
 )
-async def test_create_photographer(db: AsyncSession, user: PhotographerCreate, photographer: Photographer):
-    user = await create_photographer(db, user)
+async def test_create_photographer(db_session: AsyncSession, user: PhotographerCreate, photographer: Photographer):
+    user = await create_photographer(db_session, user)
     assert Photographer(**dict(user)) == photographer
 
 
@@ -85,8 +85,8 @@ async def test_create_photographer(db: AsyncSession, user: PhotographerCreate, p
         ),
     ]
 )
-async def test_create_customer(db: AsyncSession, user: CustomerCreate, customer: Customer):
-    user = await create_customer(db, user)
+async def test_create_customer(db_session: AsyncSession, user: CustomerCreate, customer: Customer):
+    user = await create_customer(db_session, user)
     assert Customer(**dict(user)) == customer
 
 
@@ -120,6 +120,6 @@ async def test_create_customer(db: AsyncSession, user: CustomerCreate, customer:
         ),
     ]
 )
-async def test_create_admin(db: AsyncSession, user: AdminCreate, admin: Admin):
-    user = await create_admin(db, user)
+async def test_create_admin(db_session: AsyncSession, user: AdminCreate, admin: Admin):
+    user = await create_admin(db_session, user)
     assert Admin(**dict(user)) == admin

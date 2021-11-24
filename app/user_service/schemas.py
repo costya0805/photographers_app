@@ -46,3 +46,7 @@ class UserCreate(UserBase):
 class UserDB(UserBase):
     id: UUID
     password: str
+
+
+class UserUpdate(UserCreate):
+    pass

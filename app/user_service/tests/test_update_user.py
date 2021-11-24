@@ -54,10 +54,10 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin, AdminUpda
         ),
     ]
 )
-async def test_update_photographer(db: AsyncSession, user: PhotographerCreate, updated: PhotographerUpdate,
+async def test_update_photographer(db_session: AsyncSession, user: PhotographerCreate, updated: PhotographerUpdate,
                                    photographer: Photographer):
-    user = await create_photographer(db, user)
-    updated_user = await update_photographer(db, user.id, updated)
+    user = await create_photographer(db_session, user)
+    updated_user = await update_photographer(db_session, user.id, updated)
     assert Photographer(**dict(updated_user)) == photographer
 
 
@@ -95,9 +95,9 @@ async def test_update_photographer(db: AsyncSession, user: PhotographerCreate, u
         ),
     ]
 )
-async def test_update_customer(db: AsyncSession, user: CustomerCreate, updated: CustomerUpdate, customer: Customer):
-    user = await create_customer(db, user)
-    updated_user = await update_customer(db, user.id, updated)
+async def test_update_customer(db_session: AsyncSession, user: CustomerCreate, updated: CustomerUpdate, customer: Customer):
+    user = await create_customer(db_session, user)
+    updated_user = await update_customer(db_session, user.id, updated)
     assert Customer(**dict(updated_user)) == customer
 
 
@@ -135,7 +135,7 @@ async def test_update_customer(db: AsyncSession, user: CustomerCreate, updated: 
         ),
     ]
 )
-async def test_update_admin(db: AsyncSession, user: AdminCreate, updated: AdminUpdate, admin: Admin):
-    user = await create_admin(db, user)
-    updated_user = await update_admin(db, user.id, updated)
+async def test_update_admin(db_session: AsyncSession, user: AdminCreate, updated: AdminUpdate, admin: Admin):
+    user = await create_admin(db_session, user)
+    updated_user = await update_admin(db_session, user.id, updated)
     assert Admin(**dict(updated_user)) == admin

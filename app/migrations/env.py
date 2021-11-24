@@ -20,7 +20,6 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 from app.db import Base
-from app.photos import models
 from app.user_service import models
 
 target_metadata = Base.metadata
