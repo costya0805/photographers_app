@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import AdminUpdate, AdminCreate, AdminDB
 from ..models import Roles
-from ..service import UserAPI
+from ..models_api import UserAPI
 
 logger = logging.getLogger(__name__)
 admin = UserAPI(Roles.admin, AdminDB, AdminCreate, AdminUpdate)

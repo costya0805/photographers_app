@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import PhotographerDB, PhotographerCreate, PhotographerUpdate
 from ..models import Roles
-from ..service import UserAPI
+from ..models_api import UserAPI
 
 logger = logging.getLogger(__name__)
 photographer = UserAPI(Roles.photographer, PhotographerDB, PhotographerCreate, PhotographerUpdate)

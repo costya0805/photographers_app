@@ -49,4 +49,9 @@ class UserDB(UserBase):
 
 
 class UserUpdate(UserCreate):
-    pass
+    first_name: Optional[str]
+    last_name: Optional[str]
+    email: Optional[str]
+    role: Optional[Roles]
+    creation_date: Optional[datetime]
+    password: Optional[str]

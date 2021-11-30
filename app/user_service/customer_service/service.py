@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import CustomerDB, CustomerCreate, CustomerUpdate
 from ..models import Roles
-from ..service import UserAPI
+from ..models_api import UserAPI
 
 logger = logging.getLogger(__name__)
 customer = UserAPI(Roles.customer, CustomerDB, CustomerCreate, CustomerUpdate)
