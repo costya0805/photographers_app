@@ -21,6 +21,7 @@ fileConfig(config.config_file_name)
 # target_metadata = None
 from app.db import Base
 from app.user_service import models
+from app.ordering_service import models
 
 target_metadata = Base.metadata
 
