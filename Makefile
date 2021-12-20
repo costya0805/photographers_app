@@ -65,3 +65,6 @@ ci:	lint test
 win_ci: win_lint win_test
 
 .PHONY: venv
+
+docker:
+	docker-compose build && docker-compose up -d

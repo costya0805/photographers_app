@@ -1,7 +1,7 @@
 import enum
 import uuid
 
-from sqlalchemy import Column, Integer, String, Enum, DateTime, ForeignKey, sql
+from sqlalchemy import Column, String, Enum, DateTime, ForeignKey, sql, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
@@ -20,16 +20,14 @@ class Order(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     status = Column(Enum(OrderStatus), default=OrderStatus.new, nullable=False, index=True)
+    title = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    price = Column(String, default=0)
+    price = Column(Integer, default=0)
+    created_date = Column(DateTime(timezone=True), server_default=sql.func.now())
+    updated_date = Column(DateTime(timezone=True))
 
-    customer = relationship("User", cascade="all, delete")
     customer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
-    performer = relationship("User", cascade="all, delete")
     performer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
-    comments = relationship("Comment", cascade="all, delete")
-    dates = relationship("Dates", cascade="all, delete")
-    # attachments = fore
 
 
 class Comment(Base):
@@ -37,10 +35,12 @@ class Comment(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     text = Column(String, nullable=False)
-    author = relationship("User")
     author_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)
-    creation_date = Column(DateTime(timezone=True), server_default=sql.func.now())
+    created_date = Column(DateTime(timezone=True), server_default=sql.func.now())
+    updated_date = Column(DateTime(timezone=True))
+
+    author = relationship("User")
 
 
 class Dates(Base):
@@ -50,4 +50,5 @@ class Dates(Base):
     description = Column(String, nullable=False)
     start_datetime = Column(DateTime(timezone=True), nullable=False)
     end_datetime = Column(DateTime(timezone=True), nullable=False)
+
     order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)
