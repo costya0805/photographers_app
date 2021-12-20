@@ -25,7 +25,7 @@ class UserAPI:
         self.model_update = model_update
 
     async def get_users(self, db: AsyncSession) -> List[model_db]:
-        query = select(User).where(User.role == self.role).order_by(User.creation_date)
+        query = select(User).where(User.role == self.role).order_by(User.created_date)
         users = await db.execute(query)
         users = users.scalars().all()
         return [self.model_db.from_orm(user) for user in users]
@@ -58,11 +58,6 @@ class SocialMediaAPI:
     model_db = SocialMediaDB
     model_create = SocialMediaCreate
     model_update = SocialMediaUpdate
-
-    def __init__(self, model_db=SocialMediaDB, model_create=SocialMediaCreate, model_update=SocialMediaUpdate):
-        self.model_db = model_db
-        self.model_create = model_create
-        self.model_update = model_update
 
     async def get_social_medias(self, db: AsyncSession, user_id: UUID) -> List[model_db]:
         query = select(SocialMedia).where(SocialMedia.user_id == user_id)

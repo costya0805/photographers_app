@@ -26,7 +26,7 @@ class UserBase(BaseModel):
     birthdate: Optional[datetime] = None
     city: Optional[str] = None
     role: Roles = Roles.customer
-    creation_date: datetime
+    created_date: datetime
 
     class Config:
         orm_mode = True
@@ -34,7 +34,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str = generate_pwd()
-    creation_date: datetime = datetime.utcnow()
+    created_date: datetime = datetime.utcnow()
 
     @validator('password')
     def valid_password(cls, v: str):
@@ -53,5 +53,5 @@ class UserUpdate(UserCreate):
     last_name: Optional[str]
     email: Optional[str]
     role: Optional[Roles]
-    creation_date: Optional[datetime]
+    created_date: Optional[datetime]
     password: Optional[str]

@@ -29,7 +29,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin
                         'role': Roles.photographer,
                         'experience': 3,
                         'about': "Good man",
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 ),
                 Photographer(
@@ -44,7 +44,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin
                         'role': Roles.photographer,
                         'experience': 3,
                         'about': "Good man",
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 )
         ),
@@ -54,7 +54,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin
                         'first_name': 'Man',
                         'last_name': 'Nowhere',
                         'email': 'nowhere@man.com',
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 ),
                 Photographer(
@@ -69,7 +69,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin
                         'role': Roles.photographer,
                         'experience': 0,
                         'about': None,
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 )
         ),
@@ -95,7 +95,7 @@ async def test_get_photographer(db_session: AsyncSession, user: PhotographerCrea
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.customer,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 Customer(**{
                     'first_name': 'Man',
@@ -106,7 +106,7 @@ async def test_get_photographer(db_session: AsyncSession, user: PhotographerCrea
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.customer,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
         (
@@ -114,7 +114,7 @@ async def test_get_photographer(db_session: AsyncSession, user: PhotographerCrea
                     'first_name': 'Man',
                     'last_name': 'Nowhere',
                     'email': 'nowhere@man.com',
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 Customer(**{
                     'first_name': 'Man',
@@ -127,7 +127,7 @@ async def test_get_photographer(db_session: AsyncSession, user: PhotographerCrea
                     'role': Roles.customer,
                     'experience': 0,
                     'about': None,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
     ]
@@ -152,7 +152,7 @@ async def test_get_customer(db_session: AsyncSession, user: CustomerCreate, cust
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.admin,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 Admin(**{
                     'first_name': 'Man',
@@ -163,7 +163,7 @@ async def test_get_customer(db_session: AsyncSession, user: CustomerCreate, cust
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.admin,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
         (
@@ -171,7 +171,7 @@ async def test_get_customer(db_session: AsyncSession, user: CustomerCreate, cust
                     'first_name': 'Man',
                     'last_name': 'Nowhere',
                     'email': 'nowhere@man.com',
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 Admin(**{
                     'first_name': 'Man',
@@ -184,7 +184,7 @@ async def test_get_customer(db_session: AsyncSession, user: CustomerCreate, cust
                     'role': Roles.admin,
                     'experience': 0,
                     'about': None,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
     ]

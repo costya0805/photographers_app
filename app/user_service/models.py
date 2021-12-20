@@ -39,12 +39,12 @@ class User(Base):
     role = Column(Enum(Roles), default=Roles.customer, nullable=False, index=True)
     birthdate = Column(DateTime(timezone=True), nullable=False)
     about = Column(String)
-    creation_date = Column(DateTime(timezone=True), server_default=sql.func.now())
+    created_date = Column(DateTime(timezone=True), server_default=sql.func.now())
 
     social_media = relationship("SocialMedia", cascade="all, delete")
     # portfolio = fore
     # genres = fore
-    # orders = fore
+    # связь с orders решили не делать, будем обращаться напрямую в сервис заказов
 
 
 class SocialMedia(Base):

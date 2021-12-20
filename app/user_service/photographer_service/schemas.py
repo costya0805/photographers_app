@@ -25,4 +25,4 @@ class PhotographerUpdate(PhotographerCreate):
     email: Optional[str]
     role: Optional[Roles]
     password: Optional[str]
-    creation_date: Optional[datetime]
+    created_date: Optional[datetime]

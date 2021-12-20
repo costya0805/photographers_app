@@ -29,7 +29,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin, AdminUpda
                         'role': Roles.photographer,
                         'experience': 3,
                         'about': "Good man",
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 ),
                 PhotographerUpdate(**{
@@ -48,7 +48,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin, AdminUpda
                         'role': Roles.photographer,
                         'experience': 3,
                         'about': "Good man",
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 )
         ),
@@ -75,7 +75,7 @@ async def test_update_photographer(db_session: AsyncSession, user: PhotographerC
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.customer,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 CustomerUpdate(**{
                     'middle_name': 'Smith',
@@ -90,7 +90,7 @@ async def test_update_photographer(db_session: AsyncSession, user: PhotographerC
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Moscow',
                     'role': Roles.customer,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
     ]
@@ -115,7 +115,7 @@ async def test_update_customer(db_session: AsyncSession, user: CustomerCreate, u
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.admin,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 AdminUpdate(**{
                     'middle_name': 'Smith',
@@ -130,7 +130,7 @@ async def test_update_customer(db_session: AsyncSession, user: CustomerCreate, u
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Moscow',
                     'role': Roles.admin,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
     ]

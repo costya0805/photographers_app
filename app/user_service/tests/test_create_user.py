@@ -29,7 +29,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin
                         'role': Roles.photographer,
                         'experience': 3,
                         'about': "Good man",
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 ),
                 Photographer(
@@ -44,7 +44,7 @@ from app.user_service.admin_service.schemas import AdminCreate, Admin
                         'role': Roles.photographer,
                         'experience': 3,
                         'about': "Good man",
-                        'creation_date': datetime(year=2021, month=11, day=1)
+                        'created_date': datetime(year=2021, month=11, day=1)
                     }
                 )
         ),
@@ -69,7 +69,7 @@ async def test_create_photographer(db_session: AsyncSession, user: PhotographerC
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.customer,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 Customer(**{
                     'first_name': 'Man',
@@ -80,7 +80,7 @@ async def test_create_photographer(db_session: AsyncSession, user: PhotographerC
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.customer,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
     ]
@@ -104,7 +104,7 @@ async def test_create_customer(db_session: AsyncSession, user: CustomerCreate, c
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.admin,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 }),
                 Admin(**{
                     'first_name': 'Man',
@@ -115,7 +115,7 @@ async def test_create_customer(db_session: AsyncSession, user: CustomerCreate, c
                     'birthdate': datetime(year=2000, month=1, day=1),
                     'city': 'Nowhere',
                     'role': Roles.admin,
-                    'creation_date': datetime(year=2021, month=11, day=1)
+                    'created_date': datetime(year=2021, month=11, day=1)
                 })
         ),
     ]
