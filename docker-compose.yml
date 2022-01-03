@@ -23,7 +23,7 @@ services:
       - postgres
 
   app:
-    build: .
+    build: ./app
     container_name: app
     volumes:
       - .:/app
