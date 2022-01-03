@@ -1,8 +1,8 @@
-"""add order service
+"""order and user tables
 
-Revision ID: 9fd0259e9df0
-Revises: d608c6449570
-Create Date: 2021-12-03 15:24:11.215504
+Revision ID: b449e975938a
+Revises: 
+Create Date: 2022-01-03 23:27:34.418536
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '9fd0259e9df0'
-down_revision = 'd608c6449570'
+revision = 'b449e975938a'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -41,7 +41,7 @@ def upgrade():
     sa.Column('status', sa.Enum('new', 'in_progress', 'closed', 'canceled', name='orderstatus'), nullable=False),
     sa.Column('title', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
-    sa.Column('price', sa.String(), nullable=True),
+    sa.Column('price', sa.Integer(), nullable=True),
     sa.Column('created_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_date', sa.DateTime(timezone=True), nullable=True),
     sa.Column('customer_id', postgresql.UUID(as_uuid=True), nullable=False),
