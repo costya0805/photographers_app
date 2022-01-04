@@ -6,7 +6,8 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update ; \
     apt-get install -y --no-install-recommends \
         gcc \
-        g++
+        g++ \
+        vim
 
 COPY ./requirements.txt /app/requirements.txt
 
@@ -29,5 +30,4 @@ RUN python3 -m pytest tests
 
 FROM stage0 as final
 
-CMD ["alembic", "upgrade", "head"]
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]

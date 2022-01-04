@@ -1,5 +1,5 @@
 import asyncio
-from logging.config import fileConfig
+# from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
@@ -12,7 +12,7 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name)
+# fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -85,4 +85,33 @@ async def run_migrations_online():
 if context.is_offline_mode():
     run_migrations_offline()
 else:
-    asyncio.run(run_migrations_online())
+    # asyncio.run(run_migrations_online())
+    # loop = asyncio.get_event_loop()
+    loop = asyncio.get_event_loop()
+    if loop.is_running():
+        asyncio.create_task(run_migrations_online())
+    else:
+        asyncio.run(run_migrations_online())
+    # try:
+    #     loop = asyncio.get_running_loop()
+    # except RuntimeError:
+    #     loop = None
+    # if loop and loop.is_running():
+    #     loop.run_until_complete(run_migrations_online())
+    # else:
+    #     asyncio.run(run_migrations_online())
+    # loop.run_in_executor(None, run_migrations_online)
+    # try:
+    #     loop = asyncio.get_running_loop()
+    # except RuntimeError:
+    #     loop = None
+    #
+    # if loop and loop.is_running():
+    #     tsk = loop.create_task(run_migrations_online())
+    #     tsk.add_done_callback(  # optional
+    #         lambda t: print(f'Task done: '  # optional
+    #                         f'{t.result()=} << return val of main()'))  # optional (using py38)
+    # else:
+    #     print('Starting new event loop')
+    #     asyncio.run(run_migrations_online())
+
