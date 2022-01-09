@@ -16,6 +16,7 @@ class SocialMediaType(enum.Enum):
     tw = "Twitter"
     wa = "WhatsApp"
     vb = "Viber"
+    web = "Web"
 
 
 class Roles(enum.Enum):
@@ -40,11 +41,13 @@ class User(Base):
     birthdate = Column(DateTime(timezone=True), nullable=False)
     about = Column(String)
     created_date = Column(DateTime(timezone=True), server_default=sql.func.now())
+    contact_time = Column(String)
 
     social_media = relationship("SocialMedia", cascade="all, delete")
-    # portfolio = fore
-    # genres = fore
-    # связь с orders решили не делать, будем обращаться напрямую в сервис заказов
+    tags = relationship("UserTags", cascade="all, delete")
+    price_list = relationship("PriceList", cascade="all, delete")
+    feedbacks = relationship("Feedbacks", foreign_keys='Feedbacks.photographer_id', cascade="all, delete")
+    # portfolios = relationship("Portfolio", cascade="all, delete")
 
 
 class SocialMedia(Base):
@@ -55,3 +58,37 @@ class SocialMedia(Base):
     link = Column(String, nullable=False)
     type = Column(Enum(SocialMediaType), nullable=False)
 
+
+class Tags(Base):
+    __tablename__ = "tags"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String, unique=True, nullable=False)
+
+
+class UserTags(Base):
+    __tablename__ = "user tags"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    tag_id = Column(UUID(as_uuid=True), ForeignKey("tags.id"), nullable=False)
+
+
+class PriceList(Base):
+    __tablename__ = "price list"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    service = Column(String, nullable=False)
+    price = Column(Integer, nullable=False)
+
+
+class Feedbacks(Base):
+    __tablename__ = "feedbacks"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    text = Column(String, nullable=False)
+    author_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    photographer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    created_date = Column(DateTime(timezone=True), server_default=sql.func.now())
+    updated_date = Column(DateTime(timezone=True))

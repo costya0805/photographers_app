@@ -31,7 +31,7 @@ user_api = UserAPI()
 
 
 app.include_router(user_router, prefix='/users', tags=['Users'])
-app.include_router(order_router, prefix='/orders', tags=['Orders'])
+app.include_router(order_router, prefix='/users', tags=['Orders'])  # путь до заказов: /users/user_id/orders
 
 
 @app.get("/")

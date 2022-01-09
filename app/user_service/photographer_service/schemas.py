@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from ..models import Roles
-from ..schemas import UserBase, UserDB, UserCreate
+from ..schemas import UserBase, UserDB, UserCreate, SocialMediaCreate, TagsCreate, PriceListCreate, FeedbackCreate, \
+    TagsDB, PriceListDB, FeedbackDB
 
 
 class Photographer(UserBase):
@@ -26,3 +27,15 @@ class PhotographerUpdate(PhotographerCreate):
     role: Optional[Roles]
     password: Optional[str]
     created_date: Optional[datetime]
+
+
+class FullPhotographerCreate(PhotographerCreate):
+    social_medias: List[SocialMediaCreate] = []
+    tags: List[TagsCreate] = []
+    price_list: List[PriceListCreate] = []
+
+
+class PhotographerFullDB(PhotographerDB):
+    tags: List[TagsDB] = []
+    price_list: List[PriceListDB] = []
+    feedbacks: List[FeedbackDB] = []

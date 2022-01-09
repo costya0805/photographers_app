@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import datetime, date, time
 from typing import Optional, List
 from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.ordering_service.models import OrderStatus
+from app.ordering_service.models import OrderStatus, PageOrientation, PageProportions, FileFormat, PostProcessing
 
 
 class DatesBase(BaseModel):
@@ -63,13 +63,27 @@ class CommentUpdate(CommentCreate):
 
 class OrderBase(BaseModel):
     status: OrderStatus
-    title: str
+    type: str
+    subtype: Optional[str]
     description: str
-    price: int
+    price: Optional[int]
+    barter: Optional[str]
     customer_id: UUID
     performer_id: UUID
     created_date: datetime
     updated_date: datetime
+    deadline: datetime
+    date: date
+    start_time: time
+    end_time: time
+    address: Optional[str]
+    models: Optional[str]
+    number_of_frames: Optional[int]
+    screen_resolution: Optional[str]
+    orientation: Optional[PageOrientation] = PageOrientation.portrait
+    proportions: Optional[PageProportions] = PageProportions.one_to_one
+    file_format: Optional[FileFormat] = FileFormat.jpg
+    post_processing: Optional[PostProcessing] = PostProcessing.removing_defects
 
     class Config:
         orm_mode = True
@@ -81,7 +95,6 @@ class OrderDB(OrderBase):
 
 class OrderCreate(OrderBase):
     status: OrderStatus = OrderStatus.new
-    price: Optional[int]
     created_date: datetime = datetime.utcnow()
     updated_date: datetime = datetime.utcnow()
     customer_id: Optional[UUID]
@@ -89,11 +102,15 @@ class OrderCreate(OrderBase):
 
 
 class OrderUpdate(OrderCreate):
-    title: Optional[str]
+    type: Optional[str]
     status: Optional[OrderStatus]
     description: Optional[str]
     created_date: Optional[datetime]
     updated_date: datetime = datetime.utcnow()
+    deadline: Optional[datetime]
+    date: Optional[date]
+    start_time: Optional[time]
+    end_time: Optional[time]
 
 
 class OrderFullDB(OrderDB):

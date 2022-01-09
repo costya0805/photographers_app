@@ -8,9 +8,8 @@ from .admin_service.routers import router as admin_router
 from .auth import get_current_user
 from .customer_service.routers import router as customer_router
 from .photographer_service.routers import router as photographer_router
-from .schemas import UserDB
+from .schemas import UserDB, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase
 from .models_api import UserAPI, SocialMediaAPI
-from .social_media.schemas import SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase
 from app.db import async_db_session
 
 router = APIRouter()
@@ -42,7 +41,7 @@ async def user_social_medias(
 
 
 @router.post("/{user_id}/social_medias", response_model=List[SocialMediaDB])
-async def create_user_social_medias(
+async def create_user_social_media(
         user_id: UUID, social_media_items: List[SocialMediaBase],
         db: AsyncSession = Depends(async_db_session),
         current_user: UserDB = Depends(get_current_user)
@@ -54,7 +53,7 @@ async def create_user_social_medias(
 
 
 @router.patch("/{user_id}/social_medias/{social_media_id}", response_model=SocialMediaDB)
-async def user_social_medias(
+async def update_user_social_media(
         user_id: UUID,
         social_media_id: UUID,
         social_media_item: SocialMediaUpdate,
@@ -65,7 +64,7 @@ async def user_social_medias(
 
 
 @router.delete("/{user_id}/social_medias/{social_media_id}")
-async def user_social_medias(
+async def delete_user_social_media(
         user_id: UUID,
         social_media_id: UUID,
         db: AsyncSession = Depends(async_db_session),

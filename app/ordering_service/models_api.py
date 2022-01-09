@@ -33,22 +33,25 @@ class OrderAPI:
         orders = orders.scalars().all()
         return [self.model_db.from_orm(order) for order in orders]
 
-    async def get_order(self, db: AsyncSession, order_id: UUID) -> model_db:
+    async def get_order(self, db: AsyncSession, order_id: UUID) -> model_db | None:
         async with db.begin():
             query = select(Order).where(Order.id == order_id)
             order = await db.execute(query)
         try:
-            order = order.scalars().one()
+            order = order.scalar()
         except Exception as exc:
-            logger.error(f"User doesn't exist {exc}")
+            logger.error(f"Order doesn't exist {exc}")
             raise
-        return self.model_db.from_orm(order)
+        if order:
+            return self.model_db.from_orm(order)
+        return None
 
     async def create_order(self, db: AsyncSession, order: model_create) -> model_db:
-        async with db.begin():
-            new_order = Order(**order.dict())
-            db.add(new_order)
+        new_order = Order(**order.dict())
+        db.add(new_order)
+        await db.commit()
         await db.refresh(new_order)
+        await db.close()
         return self.model_db.from_orm(new_order)
 
     async def update_order(self, db: AsyncSession, order_id: UUID, order: model_update) -> model_db:
@@ -72,22 +75,25 @@ class CommentsAPI:
         comments = comments.scalars().all()
         return [self.model_db.from_orm(comment) for comment in comments]
 
-    async def get_comment(self, db: AsyncSession, comment_id: UUID) -> model_db:
+    async def get_comment(self, db: AsyncSession, comment_id: UUID) -> model_db | None:
         async with db.begin():
             query = select(Comment).where(Comment.id == comment_id)
             comment = await db.execute(query)
         try:
-            comment = comment.scalars().one()
+            comment = comment.scalar()
         except Exception as exc:
-            logger.error(f"User doesn't exist {exc}")
+            logger.error(f"Comment doesn't exist {exc}")
             raise
-        return self.model_db.from_orm(comment)
+        if comment:
+            return self.model_db.from_orm(comment)
+        return None
 
     async def create_comment(self, db: AsyncSession, comment: model_create) -> model_db:
-        async with db.begin():
-            new_comment = Comment(**comment.dict())
-            db.add(new_comment)
+        new_comment = Comment(**comment.dict())
+        db.add(new_comment)
+        await db.commit()
         await db.refresh(new_comment)
+        await db.close()
         return self.model_db.from_orm(new_comment)
 
     async def update_comment(self, db: AsyncSession, comment_id: UUID, comment: model_update) -> model_db:
@@ -111,22 +117,25 @@ class DatesAPI:
         dates = dates.scalars().all()
         return [self.model_db.from_orm(date) for date in dates]
 
-    async def get_date(self, db: AsyncSession, date_id: UUID) -> model_db:
+    async def get_date(self, db: AsyncSession, date_id: UUID) -> model_db | None:
         async with db.begin():
             query = select(Dates).where(Dates.id == date_id)
             date = await db.execute(query)
         try:
-            date = date.scalars().one()
+            date = date.scalar()
         except Exception as exc:
-            logger.error(f"User doesn't exist {exc}")
+            logger.error(f"Date doesn't exist {exc}")
             raise
-        return self.model_db.from_orm(date)
+        if date:
+            return self.model_db.from_orm(date)
+        return None
 
     async def create_date(self, db: AsyncSession, date: model_create) -> model_db:
-        async with db.begin():
-            new_date = Dates(**date.dict())
-            db.add(new_date)
+        new_date = Dates(**date.dict())
+        db.add(new_date)
+        await db.commit()
         await db.refresh(new_date)
+        await db.close()
         return self.model_db.from_orm(new_date)
 
     async def update_date(self, db: AsyncSession, date_id: UUID, date: model_update) -> model_db:
