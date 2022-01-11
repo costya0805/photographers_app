@@ -72,10 +72,10 @@ class OrderBase(BaseModel):
     models: Optional[str]
     number_of_frames: Optional[int]
     screen_resolution: Optional[str]
-    orientation: PageOrientation = PageOrientation.portrait
-    proportions: PageProportions = PageProportions.one_to_one
-    file_format: FileFormat = FileFormat.jpg
-    post_processing: PostProcessing = PostProcessing.removing_defects
+    orientation: Optional[PageOrientation]
+    proportions: Optional[PageProportions]
+    file_format: Optional[FileFormat]
+    post_processing: Optional[PostProcessing]
 
     class Config:
         orm_mode = True
