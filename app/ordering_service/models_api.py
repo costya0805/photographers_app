@@ -57,7 +57,7 @@ class OrderAPI:
     async def update_order(self, db: AsyncSession, order_id: UUID, order: model_update) -> model_db:
         async with db.begin():
             query = update(Order).where(Order.id == order_id).values(
-                **order.dict(exclude_unset=True), updated_date=datetime.utcnow()
+                **order.dict(exclude_unset=True)
             )
             await db.execute(query)
         return await self.get_order(db, order_id)
@@ -99,7 +99,7 @@ class CommentsAPI:
     async def update_comment(self, db: AsyncSession, comment_id: UUID, comment: model_update) -> model_db:
         async with db.begin():
             query = update(Comment).where(Comment.id == comment_id).values(
-                **comment.dict(exclude_unset=True), updated_date=datetime.utcnow()
+                **comment.dict(exclude_unset=True)
             )
             await db.execute(query)
         return await self.get_comment(db, comment_id)

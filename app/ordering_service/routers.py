@@ -6,8 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import async_db_session
 from app.ordering_service.models_api import OrderAPI
-from app.ordering_service.schemas import OrderDB, OrderUpdate, OrderFullCreate, OrderFullDB, CommentCreate, \
-    CommentUpdate, CommentDB
+from app.ordering_service.schemas import OrderDB, OrderUpdate, OrderFullCreate, OrderFullDB, CommentDB, CommentBase
 from app.ordering_service.service import get_user_orders, get_user_order, create_user_order, update_user_order, \
     create_order_comment, update_order_comment
 from app.user_service.auth import get_current_user, is_performer_or_customer
@@ -31,17 +30,17 @@ async def get_order(
         db: AsyncSession = Depends(async_db_session),
         current_user: UserDB = Depends(get_current_user)
 ) -> OrderFullDB:
-    return await get_user_order(db, user_id, order_id)
+    return await get_user_order(db, order_id)
 
 
-@router.post("/{user_id}/orders", response_model=OrderFullDB)
+@router.post("/{photographer_id}/orders", response_model=OrderFullDB)
 async def create_order(
-        user_id: UUID,
+        photographer_id: UUID,
         order_item: OrderFullCreate,
         db: AsyncSession = Depends(async_db_session),
         current_user: UserDB = Depends(get_current_user)
 ) -> OrderFullDB:
-    return await create_user_order(db, user_id, current_user.id, order_item)
+    return await create_user_order(db, photographer_id, current_user.id, order_item)
 
 
 @router.patch("/{user_id}/orders/{order_id}", response_model=OrderDB)
@@ -61,7 +60,7 @@ async def update_order(
 async def create_comment(
         user_id: UUID,
         order_id: UUID,
-        comment_item: CommentCreate,
+        comment_item: CommentBase,
         db: AsyncSession = Depends(async_db_session),
         current_user: UserDB = Depends(get_current_user)
 ) -> CommentDB:
@@ -75,7 +74,7 @@ async def update_comment(
         user_id: UUID,
         order_id: UUID,
         comment_id: UUID,
-        comment_item: CommentUpdate,
+        comment_item: CommentBase,
         db: AsyncSession = Depends(async_db_session),
         current_user: UserDB = Depends(get_current_user)
 ) -> CommentDB:

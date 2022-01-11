@@ -9,7 +9,6 @@ from app.ordering_service.models import OrderStatus, PageOrientation, PagePropor
 
 class DatesBase(BaseModel):
     description: str
-    order_id: UUID
     start_datetime: datetime
     end_datetime: datetime
 
@@ -19,13 +18,14 @@ class DatesBase(BaseModel):
 
 class DatesDB(DatesBase):
     id: UUID
+    order_id: UUID
 
 
 class DatesCreate(DatesBase):
-    order_id: Optional[UUID]
+    order_id: UUID
 
 
-class DatesUpdate(DatesCreate):
+class DatesUpdate(DatesBase):
     description: Optional[str]
     start_datetime: Optional[datetime]
     end_datetime: Optional[datetime]
@@ -33,10 +33,6 @@ class DatesUpdate(DatesCreate):
 
 class CommentBase(BaseModel):
     text: str
-    author_id: UUID
-    order_id: UUID
-    created_date: datetime
-    updated_date: Optional[datetime]
 
     class Config:
         orm_mode = True
@@ -44,46 +40,42 @@ class CommentBase(BaseModel):
 
 class CommentDB(CommentBase):
     id: UUID
+    author_id: UUID
+    order_id: UUID
+    created_date: datetime
+    updated_date: Optional[datetime]
 
 
 class CommentCreate(CommentBase):
     author_id: Optional[UUID]
     order_id: Optional[UUID]
-    created_date: datetime = datetime.utcnow()
-    updated_date: datetime = datetime.utcnow()
+    created_date: datetime
+    updated_date: datetime
 
 
-class CommentUpdate(CommentCreate):
-    text: Optional[str]
-    author_id: Optional[UUID]
-    order_id: Optional[UUID]
-    created_date: Optional[datetime]
-    updated_date: datetime = datetime.utcnow()
+class CommentUpdate(CommentBase):
+    updated_date: datetime
 
 
 class OrderBase(BaseModel):
-    status: OrderStatus
+    status: OrderStatus = OrderStatus.new
     type: str
-    subtype: Optional[str]
-    description: str
+    subtype: str
+    description: Optional[str]
     price: Optional[int]
     barter: Optional[str]
-    customer_id: UUID
-    performer_id: UUID
-    created_date: datetime
-    updated_date: datetime
-    deadline: datetime
-    date: date
-    start_time: time
-    end_time: time
+    deadline: Optional[datetime]
+    date: Optional[date]
+    start_time: Optional[time]
+    end_time: Optional[time]
     address: Optional[str]
     models: Optional[str]
     number_of_frames: Optional[int]
     screen_resolution: Optional[str]
-    orientation: Optional[PageOrientation] = PageOrientation.portrait
-    proportions: Optional[PageProportions] = PageProportions.one_to_one
-    file_format: Optional[FileFormat] = FileFormat.jpg
-    post_processing: Optional[PostProcessing] = PostProcessing.removing_defects
+    orientation: PageOrientation = PageOrientation.portrait
+    proportions: PageProportions = PageProportions.one_to_one
+    file_format: FileFormat = FileFormat.jpg
+    post_processing: PostProcessing = PostProcessing.removing_defects
 
     class Config:
         orm_mode = True
@@ -91,26 +83,27 @@ class OrderBase(BaseModel):
 
 class OrderDB(OrderBase):
     id: UUID
+    customer_id: UUID
+    performer_id: UUID
+    created_date: datetime
+    updated_date: datetime
 
 
 class OrderCreate(OrderBase):
-    status: OrderStatus = OrderStatus.new
-    created_date: datetime = datetime.utcnow()
-    updated_date: datetime = datetime.utcnow()
-    customer_id: Optional[UUID]
-    performer_id: Optional[UUID]
+    customer_id: UUID
+    performer_id: UUID
+    created_date: datetime
+    updated_date: datetime
 
 
-class OrderUpdate(OrderCreate):
-    type: Optional[str]
+class OrderUpdate(OrderBase):
     status: Optional[OrderStatus]
-    description: Optional[str]
-    created_date: Optional[datetime]
-    updated_date: datetime = datetime.utcnow()
-    deadline: Optional[datetime]
-    date: Optional[date]
-    start_time: Optional[time]
-    end_time: Optional[time]
+    type: Optional[str]
+    subtype: Optional[str]
+
+
+class FullOrderUpdate(OrderUpdate):
+    updated_date: datetime
 
 
 class OrderFullDB(OrderDB):
@@ -118,6 +111,6 @@ class OrderFullDB(OrderDB):
     comments: List[CommentDB] = []
 
 
-class OrderFullCreate(OrderCreate):
-    dates: List[DatesCreate] = []
-    comments: List[CommentCreate] = []
+class OrderFullCreate(OrderBase):
+    dates: List[DatesBase] = []
+    comments: List[CommentBase] = []
