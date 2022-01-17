@@ -13,30 +13,7 @@ class OrderStatus(enum.Enum):
     in_progress = 'in_progress'
     closed = 'closed'
     canceled = 'canceled'
-
-
-class PageOrientation(enum.Enum):
-    portrait = 'portrait'
-    landscape = 'landscape'
-
-
-class PageProportions(enum.Enum):
-    one_to_one = '1x1'
-    two_to_three = '2x3'
-    three_to_four = '3x4'
-    sixteen_to_nine = '16x9'
-
-
-class FileFormat(enum.Enum):
-    jpg = 'jpg'
-    png = 'png'
-    raw = 'raw'
-    tiff = 'tiff'
-
-
-class PostProcessing(enum.Enum):
-    removing_defects = 'removing defects'
-    color_correction = 'color correction'
+    waiting = 'waiting'
 
 
 class Order(Base):
@@ -59,10 +36,10 @@ class Order(Base):
     models = Column(String, nullable=True)
     number_of_frames = Column(Integer, nullable=True)
     screen_resolution = Column(String, nullable=True)
-    orientation = Column(Enum(PageOrientation), nullable=True)
-    proportions = Column(Enum(PageProportions), nullable=True)
-    file_format = Column(Enum(FileFormat), nullable=True)
-    post_processing = Column(Enum(PostProcessing), nullable=True)
+    orientation = Column(String, nullable=True)
+    proportions = Column(String, nullable=True)
+    file_format = Column(String, nullable=True)
+    post_processing = Column(String, nullable=True)
 
     customer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     performer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)

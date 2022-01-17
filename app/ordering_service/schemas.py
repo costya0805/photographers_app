@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.ordering_service.models import OrderStatus, PageOrientation, PageProportions, FileFormat, PostProcessing
+from app.ordering_service.models import OrderStatus
 
 
 class DatesBase(BaseModel):
@@ -72,10 +72,10 @@ class OrderBase(BaseModel):
     models: Optional[str]
     number_of_frames: Optional[int]
     screen_resolution: Optional[str]
-    orientation: Optional[PageOrientation]
-    proportions: Optional[PageProportions]
-    file_format: Optional[FileFormat]
-    post_processing: Optional[PostProcessing]
+    orientation: Optional[str]
+    proportions: Optional[str]
+    file_format: Optional[str]
+    post_processing: Optional[str]
 
     class Config:
         orm_mode = True

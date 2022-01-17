@@ -1,8 +1,8 @@
-"""add new fields in User
+"""add user and order tables
 
-Revision ID: 5c144d66d54a
+Revision ID: b5e5797f8d4b
 Revises: 
-Create Date: 2022-01-10 00:15:03.915351
+Create Date: 2022-01-17 17:24:56.952628
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '5c144d66d54a'
+revision = 'b5e5797f8d4b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -56,14 +56,14 @@ def upgrade():
     )
     op.create_table('order',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
-    sa.Column('status', sa.Enum('new', 'in_progress', 'closed', 'canceled', name='orderstatus'), nullable=False),
+    sa.Column('status', sa.Enum('new', 'in_progress', 'closed', 'canceled', 'waiting', name='orderstatus'), nullable=False),
     sa.Column('type', sa.String(), nullable=False),
     sa.Column('subtype', sa.String(), nullable=False),
-    sa.Column('description', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
     sa.Column('price', sa.Integer(), nullable=True),
     sa.Column('barter', sa.String(), nullable=True),
-    sa.Column('created_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('updated_date', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('created_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
+    sa.Column('updated_date', sa.DateTime(timezone=True), nullable=False),
     sa.Column('date', sa.Date(), nullable=True),
     sa.Column('start_time', sa.Time(timezone=True), nullable=True),
     sa.Column('end_time', sa.Time(timezone=True), nullable=True),
@@ -72,10 +72,10 @@ def upgrade():
     sa.Column('models', sa.String(), nullable=True),
     sa.Column('number_of_frames', sa.Integer(), nullable=True),
     sa.Column('screen_resolution', sa.String(), nullable=True),
-    sa.Column('orientation', sa.Enum('portrait', 'landscape', name='pageorientation'), nullable=False),
-    sa.Column('proportions', sa.Enum('one_to_one', 'two_to_three', 'three_to_four', 'sixteen_to_nine', name='pageproportions'), nullable=False),
-    sa.Column('file_format', sa.Enum('jpg', 'png', 'raw', 'tiff', name='fileformat'), nullable=False),
-    sa.Column('post_processing', sa.Enum('removing_defects', 'color_correction', name='postprocessing'), nullable=False),
+    sa.Column('orientation', sa.String(), nullable=True),
+    sa.Column('proportions', sa.String(), nullable=True),
+    sa.Column('file_format', sa.String(), nullable=True),
+    sa.Column('post_processing', sa.String(), nullable=True),
     sa.Column('customer_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('performer_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.ForeignKeyConstraint(['customer_id'], ['user.id'], ),
