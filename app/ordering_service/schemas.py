@@ -76,6 +76,7 @@ class OrderBase(BaseModel):
     proportions: Optional[str]
     file_format: Optional[str]
     post_processing: Optional[str]
+    reason_for_rejection: Optional[str]
 
     class Config:
         orm_mode = True

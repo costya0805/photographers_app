@@ -40,6 +40,7 @@ class Order(Base):
     proportions = Column(String, nullable=True)
     file_format = Column(String, nullable=True)
     post_processing = Column(String, nullable=True)
+    reason_for_rejection = Column(String, nullable=True)
 
     customer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     performer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
