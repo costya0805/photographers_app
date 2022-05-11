@@ -14,7 +14,8 @@ from .user_service.schemas import UserDB
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://eshoot.herokuapp.com"
 ]
 
 app.add_middleware(

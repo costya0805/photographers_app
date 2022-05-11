@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from ..models import Roles
 from ..schemas import UserBase, UserDB, UserCreate, SocialMediaCreate, TagsCreate, PriceListCreate, FeedbackCreate, \
-    TagsDB, PriceListDB, FeedbackDB
+    TagsDB, PriceListDB, FeedbackDB, UserUpdate
 
 
 class Photographer(UserBase):
@@ -20,7 +20,7 @@ class PhotographerCreate(Photographer, UserCreate):
     role: Optional[Roles] = Roles.photographer
 
 
-class PhotographerUpdate(PhotographerCreate):
+class PhotographerUpdate(PhotographerCreate, UserUpdate):
     first_name: Optional[str]
     last_name: Optional[str]
     email: Optional[str]

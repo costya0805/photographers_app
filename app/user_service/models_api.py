@@ -6,10 +6,10 @@ from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.user_service.models import Roles, User, SocialMedia, Tags, UserTags, PriceList, Feedbacks
+from app.user_service.models import Roles, User, SocialMedia, Tags, UserTags, PriceList, Feedbacks, Portfolio
 from app.user_service.schemas import (
-    UserDB, UserCreate, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate,
-    TagsDB, TagsCreate, PriceListDB, PriceListCreate, FeedbackDB, FeedbackCreate
+    UserDB, UserCreate, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, PriceListDB, PriceListCreate, FeedbackDB,
+    FeedbackCreate, TagsDB, TagsCreate, PortfolioDB, PortfolioCreate, PortfolioUpdate
 )
 
 logger = logging.getLogger(__name__)
@@ -240,3 +240,42 @@ class FeedbackAPI:
             await db.refresh(feedback)
         await db.close()
         return [self.model_db.from_orm(feedback) for feedback in new_feedbacks]
+
+class PortfolioAPI:
+    model_db = PortfolioDB
+    model_create = PortfolioCreate
+    model_update = PortfolioUpdate
+
+    async def create_portfolio(self, db: AsyncSession, portfolio: model_create) -> model_db:
+        new_portfolio = Portfolio(**portfolio.dict())
+        db.add(new_portfolio)
+        await db.commit()
+        await db.refresh(new_portfolio)
+        await db.close()
+        new_portfolio = self.model_db.from_orm(new_portfolio)
+        return new_portfolio
+
+    async def update_portfolio(self, db: AsyncSession, portfolio_id: UUID, portfolio: model_update) -> model_db:
+        async with db.begin():
+            query = update(Portfolio).where(Portfolio.id == portfolio_id).values(**portfolio.dict(exclude_unset = True))
+            await db.execute(query)
+        return await self.get_portfolio(db, portfolio_id)
+    
+    async def get_portfolio(self, db: AsyncSession, portfolio_id: UUID) -> model_db:
+        async with db.begin():
+            query = select(Portfolio).where(Portfolio.id == portfolio_id)
+            portfolio = await db.execute(query)
+        try:
+            portfolio = portfolio.scalar()
+        except Exception as exc:
+            logger.error(f"Portfolio dosn't exist {exc}")
+            raise
+        return self.model_db.from_orm(portfolio)
+        
+    async def get_portfolios(self, db: AsyncSession, user_id: UUID) -> List[model_db]:
+        async with db.begin():
+            query = select(Portfolio).where(Portfolio.photographer_id == user_id)
+            portfolios = await db.execute(query)
+        portfolios = portfolios.scalars().all()
+        return [self.model_db.from_orm(portfolio) for portfolio in portfolios]
+        

@@ -65,3 +65,4 @@ virtualenv==20.10.0
 watchgod==0.7
 webencodings==0.5.1
 websockets==10.0
+SQLAlchemy-Paginator==0.2

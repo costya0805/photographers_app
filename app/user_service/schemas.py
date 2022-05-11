@@ -48,6 +48,7 @@ class UserCreate(UserBase):
 
 class UserDB(UserBase):
     id: UUID
+    avatar: Optional[str]
     password: str
 
 
@@ -58,6 +59,7 @@ class UserUpdate(UserCreate):
     role: Optional[Roles]
     created_date: Optional[datetime]
     password: Optional[str]
+    avatar: Optional[str]
 
 
 class SocialMediaBase(BaseModel):
@@ -170,3 +172,23 @@ class FeedbackUpdate(FeedbackCreate):
     author_id: Optional[UUID]
     photographer_id: Optional[UUID]
     updated_date: datetime = datetime.utcnow()
+
+
+class PortfolioBase(BaseModel):
+    tag_id: UUID
+    about: Optional[str]
+
+
+class PortfolioDB(PortfolioBase):
+    id: UUID
+    user_id: UUID
+
+    class Config:
+        orm_mode = True    
+
+
+class PortfolioCreate(PortfolioBase):
+    user_id: UUID
+
+class PortfolioUpdate(PortfolioCreate):
+    tag_id: Optional[UUID]

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from ..models import Roles
-from ..schemas import UserBase, UserDB, UserCreate
+from ..schemas import UserBase, UserDB, UserCreate, UserUpdate
 
 
 class Customer(UserBase):
@@ -17,7 +17,7 @@ class CustomerCreate(Customer, UserCreate):
     role: Optional[Roles] = Roles.customer
 
 
-class CustomerUpdate(CustomerCreate):
+class CustomerUpdate(CustomerCreate, UserUpdate):
     first_name: Optional[str]
     last_name: Optional[str]
     email: Optional[str]

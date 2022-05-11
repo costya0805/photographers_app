@@ -8,13 +8,14 @@ from .admin_service.routers import router as admin_router
 from .auth import get_current_user
 from .customer_service.routers import router as customer_router
 from .photographer_service.routers import router as photographer_router
-from .schemas import UserDB, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase
-from .models_api import UserAPI, SocialMediaAPI
+from .schemas import PortfolioCreate, UserDB, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase, PortfolioDB, PortfolioBase
+from .models_api import PortfolioAPI, UserAPI, SocialMediaAPI
 from app.db import async_db_session
 
 router = APIRouter()
 user_api = UserAPI()
 social_media_api = SocialMediaAPI()
+portfolio_api = PortfolioAPI()
 
 router.include_router(admin_router, prefix="/admins")
 router.include_router(customer_router, prefix="/customers")
@@ -71,3 +72,12 @@ async def delete_user_social_media(
         current_user: UserDB = Depends(get_current_user)
 ):
     return await social_media_api.delete_social_media(db, user_id, social_media_id)
+
+@router.post("/{user_id}/portfolios", response_model = PortfolioDB)
+async def create_user_portfolio(
+    user_id: UUID, portfolio: PortfolioBase, 
+    db: AsyncSession = Depends(async_db_session), 
+    current_user: UserDB = Depends(get_current_user)
+): 
+    portfolio = PortfolioCreate(**portfolio.dict(), user_id=user_id)
+    return await portfolio_api.create_portfolio(db, portfolio)
