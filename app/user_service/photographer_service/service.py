@@ -32,7 +32,8 @@ async def get_photographer(db: AsyncSession, user_id: UUID) -> PhotographerFullD
     tags: List[TagsDB] = await tags_api.get_user_tags(db, user_id)
     price_list: List[PriceListDB] = await price_list_api.get_price_list(db, user_id)
     feedbacks: List[FeedbackDB] = await feedback_api.get_feedbacks(db, user_id)
-    return PhotographerFullDB(**gotten_photographer.dict(), tags=tags, price_list=price_list, feedbacks=feedbacks)
+    social_medias: List[SocialMediaDB] = await social_media_api.get_social_medias(db, user_id)
+    return PhotographerFullDB(**gotten_photographer.dict(), tags=tags, price_list=price_list, feedbacks=feedbacks, social_medias=social_medias)
 
 
 async def create_photographer(db: AsyncSession, user: FullPhotographerCreate) -> PhotographerDB:
@@ -46,7 +47,7 @@ async def create_photographer(db: AsyncSession, user: FullPhotographerCreate) ->
              for sm in user.social_medias])
     await db.close()
     if user.tags:
-        tags: List[TagsDB] = await tags_api.create_tags(
+        tags: List[TagsDB] = await tags_api.create_user_tags(
             db, user_id=created_photographer.id, tags=[TagsCreate(**tag.dict(exclude_unset=True)) for tag in user.tags]
         )
     await db.close()

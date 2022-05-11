@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=List[PhotographerDB])
-async def photographers(db: AsyncSession = Depends(async_db_session), current_user: UserDB = Depends(get_current_user)):
+async def photographers(db: AsyncSession = Depends(async_db_session)):
     return await get_photographers(db)
 
 

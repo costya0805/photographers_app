@@ -105,23 +105,21 @@ class TagsUpdate(TagsCreate):
 
 
 class UserTagsBase(BaseModel):
-    user_id: UUID
     tag_id: UUID
 
 
 class UserTagsDB(UserTagsBase):
-    pass
+    id: UUID
+    user_id: UUID
 
     class Config:
         orm_mode = True
 
 
 class UserTagsCreate(UserTagsBase):
-    pass
-
+    user_id: UUID
 
 class UserTagsUpdate(UserTagsCreate):
-    user_id: Optional[UUID]
     tag_id: Optional[UUID]
 
 

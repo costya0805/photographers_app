@@ -8,7 +8,7 @@ from sqlalchemy.future import select
 
 from app.user_service.models import Roles, User, SocialMedia, Tags, UserTags, PriceList, Feedbacks, Portfolio
 from app.user_service.schemas import (
-    UserDB, UserCreate, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, PriceListDB, PriceListCreate, FeedbackDB,
+    UserDB, UserCreate, UserTagsCreate, UserTagsDB, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, PriceListDB, PriceListCreate, FeedbackDB,
     FeedbackCreate, TagsDB, TagsCreate, PortfolioDB, PortfolioCreate, PortfolioUpdate
 )
 
@@ -124,6 +124,9 @@ class TagsAPI:
     model_db = TagsDB
     model_create = TagsCreate
 
+    user_model_db = UserTagsDB
+    user_model_create = UserTagsCreate
+
     async def get_tags(self, db: AsyncSession) -> List[model_db]:
         async with db.begin():
             query = select(Tags)
@@ -153,6 +156,21 @@ class TagsAPI:
             raise
         return self.model_db.from_orm(tag)
 
+    async def create_tags(self, db: AsyncSession, tags: List[model_create]) -> List[model_db]:
+        new_tags = [Tags(**tag.dict()) for tag in tags]
+        for new_tag in new_tags:
+            db.add(new_tag)
+        await db.commit()
+        for new_tag in new_tags:
+            await db.refresh(new_tag)
+        await db.close()
+        return [self.model_db.from_orm(new_tag) for new_tag in new_tags]
+    
+    async def delete_tag(self, db: AsyncSession, tag_id: UUID) -> None:
+        async with db.begin():
+            query = delete(Tags).where(Tags.id == tag_id)
+            await db.execute(query)
+
     async def get_user_tags(self, db: AsyncSession, user_id: UUID) -> List[model_db]:
         async with db.begin():
             query = select(UserTags).where(UserTags.user_id == user_id)
@@ -178,7 +196,7 @@ class TagsAPI:
         logger.error(f"Res tags: {res_tags}")
         return [self.model_db.from_orm(user_tag) for user_tag in res_tags]
 
-    async def create_tags(self, db: AsyncSession, user_id: UUID, tags: List[model_create]) -> List[model_db]:
+    async def create_user_tags(self, db: AsyncSession, user_id: UUID, tags: List[model_create]) -> List[model_db]:
         existed_tags = {tag.name for tag in await self.get_tags(db)}
         tag_names = {tag.name for tag in tags}
         new_tags = tag_names - existed_tags
@@ -196,6 +214,20 @@ class TagsAPI:
         await db.commit()
         await db.close()
         return res_tags
+    
+    async def create_user_tag(self, db: AsyncSession, user_tag: user_model_create) -> user_model_db:
+        new_user_tag = UserTags(**user_tag.dict())
+        db.add(new_user_tag)
+        await db.commit()
+        await db.refresh(new_user_tag)
+        await db.close()
+        new_user_tag = self.user_model_db.from_orm(new_user_tag)
+        return new_user_tag
+
+    async def delete_user_tag(self, db: AsyncSession, user_id: UUID, tag_id: UUID) -> None:
+        async with db.begin():
+            query = delete(UserTags).where(and_(UserTags.user_id == user_id, UserTags.tag_id == tag_id))
+            await db.execute(query)
 
 
 class PriceListAPI:
