@@ -190,3 +190,16 @@ class PortfolioCreate(PortfolioBase):
 
 class PortfolioUpdate(PortfolioCreate):
     tag_id: Optional[UUID]
+
+class PortfolioPhotoBase(BaseModel):
+    portfolio_id: UUID
+    photo_path: str
+
+class PortfolioPhotoDB(PortfolioPhotoBase):
+    id: UUID
+
+    class Config:
+        orm_mode = True    
+
+class PortfolioPhotoCreate(PortfolioPhotoBase):
+    pass

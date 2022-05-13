@@ -8,7 +8,7 @@ from .admin_service.routers import router as admin_router
 from .auth import get_current_user
 from .customer_service.routers import router as customer_router
 from .photographer_service.routers import router as photographer_router
-from .schemas import PortfolioCreate, TagsDB, UserDB, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase, PortfolioDB, PortfolioBase, UserTagsBase, UserTagsCreate, UserTagsDB
+from .schemas import PortfolioPhotoDB, PortfolioCreate, PortfolioPhotoBase, PortfolioPhotoCreate, TagsDB, UserDB, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase, PortfolioDB, PortfolioBase, UserTagsBase, UserTagsCreate, UserTagsDB
 from .models_api import PortfolioAPI, TagsAPI, UserAPI, SocialMediaAPI
 from app.db import async_db_session
 
@@ -83,6 +83,55 @@ async def create_user_portfolio(
     portfolio = PortfolioCreate(**portfolio.dict(), user_id=user_id)
     return await portfolio_api.create_portfolio(db, portfolio)
 
+@router.get("/{user_id}/portfolios", response_model = List[PortfolioDB])
+async def get_user_portfolios(
+        user_id: UUID,
+        db: AsyncSession = Depends(async_db_session), 
+        current_user: UserDB = Depends(get_current_user)
+):
+    return await portfolio_api.get_portfolios(db, user_id)
+
+@router.delete("/portfolios/{portfolio_id}")
+async def delete_portfolio(
+        portfolio_id: UUID,
+        db: AsyncSession = Depends(async_db_session),
+        current_user: UserDB = Depends(get_current_user)
+):
+    return await portfolio_api.delete_portfolio(db, portfolio_id)
+
+@router.post("/portfolios/photo", response_model = PortfolioPhotoDB)
+async def create_user_portfolio_photo(
+        portfolio_photo: PortfolioPhotoBase, 
+        db: AsyncSession = Depends(async_db_session), 
+        current_user: UserDB = Depends(get_current_user)
+):
+    portfolio_photo = PortfolioPhotoCreate(**portfolio_photo.dict())
+    return await portfolio_api.create_portfolio_photo(db, portfolio_photo)
+
+@router.get("/porftfolios/{portfolio_id}/photos", response_model = List[PortfolioPhotoDB])
+async def get_portfolio_photos(
+        portfolio_id: UUID,
+        db: AsyncSession = Depends(async_db_session), 
+        current_user: UserDB = Depends(get_current_user)
+):
+    return await portfolio_api.get_portfolio_photos(db, portfolio_id)
+
+@router.get("/{user_id}/portfolios/photos", response_model = List[PortfolioPhotoDB])
+async def get_user_photos(
+        user_id: UUID,
+        db: AsyncSession = Depends(async_db_session), 
+        current_user: UserDB = Depends(get_current_user)
+):
+    return await portfolio_api.get_user_photos(db, user_id)
+
+@router.delete("portfolios/photos/{photo_id}")
+async def delete_portfolio_photo(
+        photo_id: UUID,
+        db: AsyncSession = Depends(async_db_session), 
+        current_user: UserDB = Depends(get_current_user)  
+):
+    return await portfolio_api.delete_portfolio_photo(db, photo_id)
+
 @router.post("/{user_id}/tags/{tag_id}", response_model = UserTagsDB)
 async def create_user_tag(
         user_id: UUID, tag_id: UUID, 
@@ -102,7 +151,7 @@ async def get_user_tags(
     return await tags_api.get_user_tags(db, user_id)
 
 @router.delete("/{user_id}/tags/{tag_id}")
-async def удалить_тег_пользователя(
+async def delete_user_tag(
         tag_id: UUID, user_id: UUID, 
         db: AsyncSession = Depends(async_db_session),
         current_user: UserDB = Depends(get_current_user)

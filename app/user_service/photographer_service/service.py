@@ -23,9 +23,6 @@ async def get_photographers(db: AsyncSession) -> List[PhotographerDB]:
     photographers: List[PhotographerDB] = await photographer_api.get_users(db)
     return photographers
 
-async def get_photographers_pagination(db: AsyncSession, page_number: int) -> List[PhotographerDB]:
-    photographers: List[PhotographerDB] = await photographer_api.get_users(db)
-    return photographers
 
 async def get_photographer(db: AsyncSession, user_id: UUID) -> PhotographerFullDB:
     gotten_photographer: PhotographerDB = await photographer_api.get_user(db, user_id)

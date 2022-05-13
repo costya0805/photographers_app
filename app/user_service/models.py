@@ -64,7 +64,7 @@ class User(Base):
     tags = relationship("UserTags", cascade="all, delete")
     price_list = relationship("PriceList", cascade="all, delete")
     feedbacks = relationship("Feedbacks", foreign_keys='Feedbacks.photographer_id', cascade="all, delete")
-    # portfolios = relationship("Portfolio", cascade="all, delete")
+    portfolios = relationship("Portfolio", cascade="all, delete")
 
 
 class SocialMedia(Base):
@@ -114,12 +114,13 @@ class Portfolio(Base):
     __tablename__ = "portfolio"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    photographer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     tag_id = Column(UUID(as_uuid=True), ForeignKey("tags.id"), nullable=False)
     about = Column(String)
 
 class PortfolioPhoto(Base):
     __tablename__ = "photo"
+
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     portfolio_id = Column(UUID(as_uuid=True), ForeignKey("portfolio.id"), nullable=False)
     photo_path = Column(String)
@@ -128,6 +129,6 @@ class BusyDates(Base):
     __tablename__ = "busy dates"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    photographer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     date = Column(DateTime(timezone=True))    
     

@@ -6,9 +6,9 @@ from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.user_service.models import Roles, User, SocialMedia, Tags, UserTags, PriceList, Feedbacks, Portfolio
+from app.user_service.models import PortfolioPhoto, Roles, User, SocialMedia, Tags, UserTags, PriceList, Feedbacks, Portfolio
 from app.user_service.schemas import (
-    UserDB, UserCreate, UserTagsCreate, UserTagsDB, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, PriceListDB, PriceListCreate, FeedbackDB,
+    PortfolioPhotoDB, PortfolioPhotoCreate, UserDB, UserCreate, UserTagsCreate, UserTagsDB, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, PriceListDB, PriceListCreate, FeedbackDB,
     FeedbackCreate, TagsDB, TagsCreate, PortfolioDB, PortfolioCreate, PortfolioUpdate
 )
 
@@ -278,6 +278,10 @@ class PortfolioAPI:
     model_create = PortfolioCreate
     model_update = PortfolioUpdate
 
+    photo_model_db = PortfolioPhotoDB
+    photo_model_create = PortfolioPhotoCreate
+    
+
     async def create_portfolio(self, db: AsyncSession, portfolio: model_create) -> model_db:
         new_portfolio = Portfolio(**portfolio.dict())
         db.add(new_portfolio)
@@ -306,8 +310,51 @@ class PortfolioAPI:
         
     async def get_portfolios(self, db: AsyncSession, user_id: UUID) -> List[model_db]:
         async with db.begin():
-            query = select(Portfolio).where(Portfolio.photographer_id == user_id)
+            query = select(Portfolio).where(Portfolio.user_id == user_id)
             portfolios = await db.execute(query)
         portfolios = portfolios.scalars().all()
         return [self.model_db.from_orm(portfolio) for portfolio in portfolios]
+
+    async def delete_portfolio(self, db: AsyncSession, portfolio_id: UUID) -> None:
+        async with db.begin():
+            query = delete(PortfolioPhoto).where(PortfolioPhoto.portfolio_id == portfolio_id)
+            await db.execute(query)
+            query = delete(Portfolio).where(Portfolio.id == portfolio_id)
+            await db.execute(query)
+
+    async def create_portfolio_photo(self, db: AsyncSession, portfolio_photo: photo_model_create) -> photo_model_db:
+        new_portfolio_photo = PortfolioPhoto(**portfolio_photo.dict())
+        db.add(new_portfolio_photo)
+        await db.commit()
+        await db.refresh(new_portfolio_photo)
+        await db.close()
+        new_portfolio_photo = self.photo_model_db.from_orm(new_portfolio_photo)
+        return new_portfolio_photo
         
+    async def get_portfolio_photos(self, db: AsyncSession, portfolio_id: UUID) -> List[photo_model_db]:
+        async with db.begin():
+            query = select(PortfolioPhoto).where(PortfolioPhoto.portfolio_id == portfolio_id)
+            portfolio_photos = await db.execute(query)
+        portfolio_photos = portfolio_photos.scalars().all()
+        return [self.photo_model_db.from_orm(portfolio_photo) for portfolio_photo in portfolio_photos]
+
+    async def delete_portfolio_photo(self, db: AsyncSession, photo_id: UUID) -> None:
+        async with db.begin():
+            query = delete(PortfolioPhoto).where(PortfolioPhoto.id == photo_id)
+            await db.execute(query)
+
+    async def get_user_photos(self, db: AsyncSession, user_id: UUID) -> List[photo_model_db]:
+        async with db.begin():
+            query = select(Portfolio).where(Portfolio.user_id == user_id)
+            portfolios = await db.execute(query)
+        portfolios = portfolios.scalars().all()
+        res_photos = []
+        for portfolio in portfolios:
+            async with db.begin():
+                query = select(PortfolioPhoto).where(PortfolioPhoto.portfolio_id == portfolio.id)
+                photos = await db.execute(query)
+            photos = photos.scalars().all()
+            if photos:
+                for photo in photos:
+                    res_photos.append(photo)
+        return [self.photo_model_db.from_orm(user_photo) for user_photo in res_photos[:10]]
