@@ -264,7 +264,7 @@ class BusyDatesAPI:
         for busy_date in new_busy_dates:
             await db.refresh(busy_date)
         await db.close()
-        return [self.model_db.from_orm(busy_date) for busy_date in busy_dates]
+        return [self.model_db.from_orm(busy_date) for busy_date in new_busy_dates]
     
     async def get_busy_dates(self, db: AsyncSession, user_id: UUID) -> List[model_db]:
         async with db.begin():

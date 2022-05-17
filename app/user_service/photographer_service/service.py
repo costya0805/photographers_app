@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import PhotographerDB, PhotographerCreate, PhotographerUpdate, FullPhotographerCreate, PhotographerFullDB
 from ..models import Roles
-from ..models_api import PortfolioAPI, UserAPI, SocialMediaAPI, TagsAPI, PriceListAPI, FeedbackAPI
+from ..models_api import BusyDatesAPI, PortfolioAPI, UserAPI, SocialMediaAPI, TagsAPI, PriceListAPI, FeedbackAPI
 from ..schemas import (
-    PortfolioDB, PortfolioPhotoDB, SocialMediaDB, SocialMediaCreate, TagsDB, TagsCreate, PriceListDB, PriceListCreate, FeedbackDB
+    BusyDatesDB, PortfolioDB, PortfolioPhotoDB, SocialMediaDB, SocialMediaCreate, TagsDB, TagsCreate, PriceListDB, PriceListCreate, FeedbackDB
 )
 
 logger = logging.getLogger(__name__)
@@ -18,6 +18,7 @@ tags_api = TagsAPI()
 price_list_api = PriceListAPI()
 feedback_api = FeedbackAPI()
 portfolio_api = PortfolioAPI()
+busy_dates_api = BusyDatesAPI()
 
 
 async def get_photographers(db: AsyncSession) -> List[PhotographerDB]:
@@ -33,7 +34,8 @@ async def get_photographer(db: AsyncSession, user_id: UUID) -> PhotographerFullD
     social_medias: List[SocialMediaDB] = await social_media_api.get_social_medias(db, user_id)
     portfolios: List[PortfolioDB] = await portfolio_api.get_portfolios(db, user_id)
     photos: List[PortfolioPhotoDB] = await portfolio_api.get_user_photos(db, user_id)
-    return PhotographerFullDB(**gotten_photographer.dict(), tags=tags, price_list=price_list, feedbacks=feedbacks, social_medias=social_medias, portfolios=portfolios, photos=photos)
+    busy_dates: List[BusyDatesDB] = await busy_dates_api.get_busy_dates(db, user_id)
+    return PhotographerFullDB(**gotten_photographer.dict(), tags=tags, price_list=price_list, feedbacks=feedbacks, social_medias=social_medias, portfolios=portfolios, photos=photos, busy_dates=busy_dates)
 
 
 async def create_photographer(db: AsyncSession, user: FullPhotographerCreate) -> PhotographerDB:
