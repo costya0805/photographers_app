@@ -8,8 +8,8 @@ from .admin_service.routers import router as admin_router
 from .auth import get_current_user
 from .customer_service.routers import router as customer_router
 from .photographer_service.routers import router as photographer_router
-from .schemas import PortfolioPhotoDB, PortfolioCreate, PortfolioPhotoBase, PortfolioPhotoCreate, TagsDB, UserDB, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase, PortfolioDB, PortfolioBase, UserTagsBase, UserTagsCreate, UserTagsDB
-from .models_api import PortfolioAPI, TagsAPI, UserAPI, SocialMediaAPI
+from .schemas import BusyDatesBase, BusyDatesCreate, BusyDatesDB, PortfolioPhotoDB, PortfolioCreate, PortfolioPhotoBase, PortfolioPhotoCreate, TagsDB, UserDB, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, SocialMediaBase, PortfolioDB, PortfolioBase, UserTagsBase, UserTagsCreate, UserTagsDB
+from .models_api import BusyDatesAPI, PortfolioAPI, TagsAPI, UserAPI, SocialMediaAPI
 from app.db import async_db_session
 
 router = APIRouter()
@@ -17,6 +17,7 @@ user_api = UserAPI()
 social_media_api = SocialMediaAPI()
 portfolio_api = PortfolioAPI()
 tags_api = TagsAPI()
+busy_dates_api = BusyDatesAPI()
 
 router.include_router(admin_router, prefix="/admins")
 router.include_router(customer_router, prefix="/customers")
@@ -157,3 +158,30 @@ async def delete_user_tag(
         current_user: UserDB = Depends(get_current_user)
 ):
     return await tags_api.delete_user_tag(db, user_id, tag_id)
+
+@router.get("/{user_id}/busy_dates", response_model = List[BusyDatesDB])
+async def get_user_busy_dates(
+        user_id: UUID,
+        db: AsyncSession = Depends(async_db_session),
+        current_user: UserDB = Depends(get_current_user)    
+):
+    return await busy_dates_api.get_busy_dates(db, user_id)
+
+@router.post("/{user_id}/busy_dates", response_model = List[BusyDatesDB])
+async def create_busy_date(
+        user_id: UUID, busy_dates: List[BusyDatesBase],
+        db: AsyncSession = Depends(async_db_session),
+        current_user: UserDB = Depends(get_current_user)     
+):
+    busy_dates = [
+        BusyDatesCreate(**busy_date.dict(), user_id = user_id) for busy_date in busy_dates
+        ]
+    return await busy_dates_api.create_busy_dates(db, busy_dates)
+
+@router.delete("/{user_id}/busy_dates/{busy_date_id}")
+async def delete_busy_date(
+        user_id: UUID, busy_date_id: UUID,
+        db: AsyncSession = Depends(async_db_session),
+        current_user: UserDB = Depends(get_current_user) 
+):
+    return await busy_dates_api.deleate_busy_dates(db, user_id, busy_date_id)

@@ -56,6 +56,24 @@ class CommentCreate(CommentBase):
 class CommentUpdate(CommentBase):
     updated_date: datetime
 
+class ReferencesBase(BaseModel):
+    photo: str
+    about: Optional[str]
+
+class ReferencesDB(ReferencesBase):
+    id: UUID
+    order_id: UUID
+
+    class Config:
+        orm_mode = True
+
+class ReferencesCreate(ReferencesBase):
+    order_id: UUID
+
+class ReferencesUpdate(ReferencesBase):
+    photo: Optional[str]
+    about: Optional[str]
+
 
 class OrderBase(BaseModel):
     status: OrderStatus = OrderStatus.new
@@ -77,6 +95,7 @@ class OrderBase(BaseModel):
     file_format: Optional[str]
     post_processing: Optional[str]
     reason_for_rejection: Optional[str]
+    link_for_result: Optional[str]
 
     class Config:
         orm_mode = True
@@ -110,8 +129,10 @@ class FullOrderUpdate(OrderUpdate):
 class OrderFullDB(OrderDB):
     dates: List[DatesDB] = []
     comments: List[CommentDB] = []
+    references: List[ReferencesDB] = []
 
 
 class OrderFullCreate(OrderBase):
     dates: List[DatesBase] = []
     comments: List[CommentBase] = []
+    references: List[ReferencesBase] = []

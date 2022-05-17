@@ -4,15 +4,16 @@ from typing import List
 from uuid import UUID
 
 
-from sqlalchemy import update, or_
+
+from sqlalchemy import update, delete, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.ordering_service.models import Order, Dates, Comment
+from app.ordering_service.models import Order, Dates, Comment, References
 from app.ordering_service.schemas import (
     OrderDB, OrderCreate, OrderUpdate,
     CommentDB, CommentCreate, CommentUpdate,
-    DatesDB, DatesCreate, DatesUpdate
+    DatesDB, DatesCreate, DatesUpdate, ReferencesCreate, ReferencesDB, ReferencesUpdate
 )
 
 
@@ -143,3 +144,47 @@ class DatesAPI:
             query = update(Dates).where(Dates.id == date_id).values(**date.dict(exclude_unset=True))
             await db.execute(query)
         return await self.get_date(db, date_id)
+
+class ReferencesAPI:
+    model_db = ReferencesDB
+    model_create = ReferencesCreate
+    model_update = ReferencesUpdate
+
+    async def get_references(self, db: AsyncSession, order_id: UUID) -> List[model_db]:
+        async with db.begin():
+            query = select(References).where(References.order_id == order_id)
+            references = await db.execute(query)
+        references = references.scalars().all()
+        return [self.model_db.from_orm(reference) for reference in references]
+
+    async def get_reference(self, db: AsyncSession, reference_id: UUID) -> model_db | None:
+        async with db.begin():
+            query = select(References).where(References.id == reference_id)
+            reference = await db.execute(query)
+        try:
+            reference = reference.scalar()
+        except Exception as exc:
+            logger.error(f"Date doesn't exist {exc}")
+            raise
+        if reference:
+            return self.model_db.from_orm(reference)
+        return None
+
+    async def create_reference(self, db: AsyncSession, reference: model_create) -> model_db:
+        new_reference = References(**reference.dict())
+        db.add(new_reference)
+        await db.commit()
+        await db.refresh(new_reference)
+        await db.close()
+        return self.model_db.from_orm(new_reference)
+
+    async def update_reference(self, db: AsyncSession, reference_id: UUID, reference: model_update) -> model_db:
+        async with db.begin():
+            query = update(References).where(References.id == reference_id).values(**reference.dict(exclude_unset=True))
+            await db.execute(query)
+        return await self.get_reference(db, reference_id)
+
+    async def delete_reference(self, db: AsyncSession, reference_id: UUID) -> None:
+        async with db.begin():
+            query = delete(References).where(References.id == reference_id)
+            await db.execute(query)

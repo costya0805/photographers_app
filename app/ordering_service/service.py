@@ -4,16 +4,17 @@ from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .models_api import OrderAPI, DatesAPI, CommentsAPI
+from .models_api import OrderAPI, DatesAPI, CommentsAPI, ReferencesAPI
 from .schemas import (
     OrderDB, OrderUpdate,
     OrderFullDB, OrderFullCreate,
-    DatesCreate, CommentCreate, CommentDB, CommentUpdate, OrderCreate, FullOrderUpdate, CommentBase
+    DatesCreate, CommentCreate, CommentDB, CommentUpdate, OrderCreate, FullOrderUpdate, CommentBase, ReferencesCreate
 )
 
 order_api = OrderAPI()
 date_api = DatesAPI()
 comment_api = CommentsAPI()
+references_api = ReferencesAPI()
 
 
 async def get_user_orders(db: AsyncSession, user_id: UUID) -> List[OrderDB]:
@@ -24,7 +25,8 @@ async def get_user_order(db: AsyncSession, order_id: UUID) -> OrderFullDB:
     order_db = await order_api.get_order(db, order_id)
     dates = await date_api.get_dates(db, order_db.id)
     comments = await comment_api.get_comments(db, order_db.id)
-    return OrderFullDB(**order_db.dict(), dates=dates, comments=comments)
+    references = await references_api.get_references(db, order_db.id)
+    return OrderFullDB(**order_db.dict(), dates=dates, comments=comments, references=references)
 
 
 async def create_user_order(
@@ -40,6 +42,7 @@ async def create_user_order(
     order_db = await order_api.create_order(db, order_item)
     dates = []
     comments = []
+    references = []
     for date_item in item.dates:
         dates.append(
             await date_api.create_date(db, DatesCreate(
@@ -55,6 +58,15 @@ async def create_user_order(
                     order_id=order_db.id,
                     created_date=datetime.utcnow(),
                     updated_date=datetime.utcnow()
+                )
+            )
+        )
+    for reference in item.references:
+        references.append(
+            await references_api.create_reference(
+                db, ReferencesCreate(
+                    **reference.dict(exclude_unset=True), 
+                    order_id = order_db.id
                 )
             )
         )

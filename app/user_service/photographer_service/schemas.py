@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, List
 
 from ..models import Roles
-from ..schemas import SocialMediaDB, UserBase, UserDB, UserCreate, SocialMediaCreate, TagsCreate, PriceListCreate, FeedbackCreate, \
+from ..schemas import PortfolioDB, PortfolioPhotoDB, SocialMediaDB, UserBase, UserDB, UserCreate, SocialMediaCreate, TagsCreate, PriceListCreate, FeedbackCreate, \
     TagsDB, PriceListDB, FeedbackDB, UserUpdate
 
 
@@ -40,3 +40,5 @@ class PhotographerFullDB(PhotographerDB):
     price_list: List[PriceListDB] = []
     feedbacks: List[FeedbackDB] = []
     social_medias: List[SocialMediaDB] = []
+    portfolios: List[PortfolioDB] = []
+    photos: List[PortfolioPhotoDB] = []

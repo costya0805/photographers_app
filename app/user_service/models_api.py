@@ -6,9 +6,9 @@ from sqlalchemy import update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.user_service.models import PortfolioPhoto, Roles, User, SocialMedia, Tags, UserTags, PriceList, Feedbacks, Portfolio
+from app.user_service.models import BusyDates, PortfolioPhoto, Roles, User, SocialMedia, Tags, UserTags, PriceList, Feedbacks, Portfolio
 from app.user_service.schemas import (
-    PortfolioPhotoDB, PortfolioPhotoCreate, UserDB, UserCreate, UserTagsCreate, UserTagsDB, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, PriceListDB, PriceListCreate, FeedbackDB,
+    BusyDatesCreate, BusyDatesDB, PortfolioPhotoDB, PortfolioPhotoCreate, UserDB, UserCreate, UserTagsCreate, UserTagsDB, UserUpdate, SocialMediaDB, SocialMediaCreate, SocialMediaUpdate, PriceListDB, PriceListCreate, FeedbackDB,
     FeedbackCreate, TagsDB, TagsCreate, PortfolioDB, PortfolioCreate, PortfolioUpdate
 )
 
@@ -252,6 +252,32 @@ class PriceListAPI:
         return [self.model_db.from_orm(price) for price in new_price_list]
 
 
+class BusyDatesAPI:
+    model_db = BusyDatesDB
+    model_create = BusyDatesCreate
+
+    async def create_busy_dates(self, db: AsyncSession, busy_dates: List[model_create]) -> List[model_db]:
+        new_busy_dates = [BusyDates(**busy_date.dict()) for busy_date in busy_dates]
+        for busy_date in new_busy_dates:
+            db.add(busy_date)
+        await db.commit()
+        for busy_date in new_busy_dates:
+            await db.refresh(busy_date)
+        await db.close()
+        return [self.model_db.from_orm(busy_date) for busy_date in busy_dates]
+    
+    async def get_busy_dates(self, db: AsyncSession, user_id: UUID) -> List[model_db]:
+        async with db.begin():
+            query = select(BusyDates).where(BusyDates.user_id == user_id)
+            busy_dates = await db.execute(query)
+        busy_dates = busy_dates.scalars().all()
+        return [self.model_db.from_orm(busy_date) for busy_date in busy_dates]
+
+    async def deleate_busy_dates(self, db: AsyncSession, user_id: UUID, busy_date_id: UUID) -> None:
+        async with db.begin():
+            query = delete(BusyDates).where(and_(BusyDates.user_id == user_id, BusyDates.id == busy_date_id))
+            await db.execute(query)
+
 class FeedbackAPI:
     model_db = FeedbackDB
     model_create = FeedbackCreate
@@ -358,3 +384,4 @@ class PortfolioAPI:
                 for photo in photos:
                     res_photos.append(photo)
         return [self.photo_model_db.from_orm(user_photo) for user_photo in res_photos[:10]]
+

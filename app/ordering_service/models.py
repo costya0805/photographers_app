@@ -41,6 +41,7 @@ class Order(Base):
     file_format = Column(String, nullable=True)
     post_processing = Column(String, nullable=True)
     reason_for_rejection = Column(String, nullable=True)
+    link_for_result = Column(String, nullable=True)
 
     customer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     performer_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
@@ -67,4 +68,14 @@ class Dates(Base):
     start_datetime = Column(DateTime(timezone=True), nullable=False)
     end_datetime = Column(DateTime(timezone=True), nullable=False)
 
+    order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)
+
+
+class References(Base):
+    __tablename__ = "references"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    about = Column(String)
+    photo = Column(String, nullable=False)
+    
     order_id = Column(UUID(as_uuid=True), ForeignKey("order.id"), nullable=False)

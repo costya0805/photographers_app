@@ -130,5 +130,4 @@ class BusyDates(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
-    date = Column(DateTime(timezone=True))    
-    
+    date = Column(DateTime(timezone=True))

@@ -176,7 +176,6 @@ class PortfolioBase(BaseModel):
     tag_id: UUID
     about: Optional[str]
 
-
 class PortfolioDB(PortfolioBase):
     id: UUID
     user_id: UUID
@@ -184,12 +183,12 @@ class PortfolioDB(PortfolioBase):
     class Config:
         orm_mode = True    
 
-
 class PortfolioCreate(PortfolioBase):
     user_id: UUID
 
 class PortfolioUpdate(PortfolioCreate):
     tag_id: Optional[UUID]
+
 
 class PortfolioPhotoBase(BaseModel):
     portfolio_id: UUID
@@ -203,3 +202,17 @@ class PortfolioPhotoDB(PortfolioPhotoBase):
 
 class PortfolioPhotoCreate(PortfolioPhotoBase):
     pass
+
+
+class BusyDatesBase(BaseModel):
+    date: datetime
+
+class BusyDatesDB(BusyDatesBase):
+    id: UUID
+    user_id: UUID
+
+    class Config:
+        orm_mode = True
+
+class BusyDatesCreate(BusyDatesBase):
+    user_id: UUID

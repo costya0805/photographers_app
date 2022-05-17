@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import PhotographerDB, PhotographerCreate, PhotographerUpdate, FullPhotographerCreate, PhotographerFullDB
 from ..models import Roles
-from ..models_api import UserAPI, SocialMediaAPI, TagsAPI, PriceListAPI, FeedbackAPI
+from ..models_api import PortfolioAPI, UserAPI, SocialMediaAPI, TagsAPI, PriceListAPI, FeedbackAPI
 from ..schemas import (
-    SocialMediaDB, SocialMediaCreate, TagsDB, TagsCreate, PriceListDB, PriceListCreate, FeedbackDB
+    PortfolioDB, PortfolioPhotoDB, SocialMediaDB, SocialMediaCreate, TagsDB, TagsCreate, PriceListDB, PriceListCreate, FeedbackDB
 )
 
 logger = logging.getLogger(__name__)
@@ -17,6 +17,7 @@ social_media_api = SocialMediaAPI()
 tags_api = TagsAPI()
 price_list_api = PriceListAPI()
 feedback_api = FeedbackAPI()
+portfolio_api = PortfolioAPI()
 
 
 async def get_photographers(db: AsyncSession) -> List[PhotographerDB]:
@@ -30,7 +31,9 @@ async def get_photographer(db: AsyncSession, user_id: UUID) -> PhotographerFullD
     price_list: List[PriceListDB] = await price_list_api.get_price_list(db, user_id)
     feedbacks: List[FeedbackDB] = await feedback_api.get_feedbacks(db, user_id)
     social_medias: List[SocialMediaDB] = await social_media_api.get_social_medias(db, user_id)
-    return PhotographerFullDB(**gotten_photographer.dict(), tags=tags, price_list=price_list, feedbacks=feedbacks, social_medias=social_medias)
+    portfolios: List[PortfolioDB] = await portfolio_api.get_portfolios(db, user_id)
+    photos: List[PortfolioPhotoDB] = await portfolio_api.get_user_photos(db, user_id)
+    return PhotographerFullDB(**gotten_photographer.dict(), tags=tags, price_list=price_list, feedbacks=feedbacks, social_medias=social_medias, portfolios=portfolios, photos=photos)
 
 
 async def create_photographer(db: AsyncSession, user: FullPhotographerCreate) -> PhotographerDB:
