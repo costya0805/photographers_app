@@ -59,6 +59,8 @@ class User(Base):
     created_date = Column(DateTime(timezone=True), server_default=sql.func.now())
     contact_time = Column(String)
     avatar = Column(String)
+    min_cost = Column(Integer)
+    min_date = Column(Integer)
 
     social_media = relationship("SocialMedia", cascade="all, delete")
     tags = relationship("UserTags", cascade="all, delete")

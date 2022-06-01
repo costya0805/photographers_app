@@ -23,7 +23,6 @@ class UserBase(BaseModel):
     middle_name: Optional[str] = None
     email: str
     phone: Optional[str] = None
-    experience: Optional[int] = None
     city: Optional[str] = None
     role: Roles = Roles.customer
     birthdate: Optional[datetime] = None
@@ -49,6 +48,9 @@ class UserCreate(UserBase):
 class UserDB(UserBase):
     id: UUID
     avatar: Optional[str]
+    min_cost: Optional[int]
+    min_date: Optional[int]
+    experience: Optional[int]
     password: str
 
 
@@ -60,6 +62,9 @@ class UserUpdate(UserCreate):
     created_date: Optional[datetime]
     password: Optional[str]
     avatar: Optional[str]
+    min_cost: Optional[int]
+    min_date: Optional[int]
+    experience: Optional[int]
 
 
 class SocialMediaBase(BaseModel):

@@ -8,7 +8,6 @@ from ..schemas import BusyDatesDB, PortfolioDB, PortfolioPhotoDB, SocialMediaDB,
 
 class Photographer(UserBase):
     role: Roles = Roles.photographer
-    experience: Optional[int] = 0
     about: Optional[str] = None
 
 
